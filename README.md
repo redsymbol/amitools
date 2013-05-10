@@ -48,6 +48,7 @@ Unless noted otherwise, each command takes the following options:
   - -r/--region  Operate on the given region
 
 ## ami-create-image
+(not implemented yet)
 
 This is similar to the ec2-create-image command from the AWS command
 line tools, with some differences: 
@@ -100,6 +101,7 @@ the highly unlikely event the first generated name is taken,
 ami-create-image will generating a new name until it finds a unique one.)
 
 ## ami-waiton and ami-waiton-available
+(not implemented yet)
 
 Robustly wait on an AMI to be in a particular state. Intelligently
 handle latency and race conditions.
@@ -150,6 +152,7 @@ intelligence, and waiting through the pre-pending state), but these
 cannot be disabled. If you need that, use ami-waiton instead.
 
 ## ami-describe-anscestors
+(not implemented yet)
 
 ami-describe-anscestors answers questions like:
 
@@ -179,6 +182,7 @@ that ami-44444444 was created from an instance run from i-33333333,
 and so on.
 
 ## ami-describe-children
+(not implemented yet)
 
 ami-describe-children answers questions like:
 
@@ -190,9 +194,8 @@ Like ami-describe-anscestors, it works only with images that were
 created via ami-create-images, or those AMIs that are externally
 tagged in the same way ami-create-images does - for the same reasons.
 
-(not implemented yet)
-
 ## ami-tag-image
+(not implemented yet)
 
 Tags an existing image in the same way that ami-create-image does. You
 must supply all the values yourself.

@@ -1,1 +1,63 @@
 #!/usr/bin/env python
+
+def get_args():
+    import argparse
+    parser = argparse.ArgumentParser(description='ami-create-image - Like ec2-create-image, but way better')
+    parser.add_argument('instance_id',
+                        help='Instance ID to create image from')
+    parser.add_argument('-r', '--region',
+                        help='''Specify REGION as the web service region to use.
+Overrides the value specified by AWS_DEFAULT_REGION.
+''')
+    parser.add_argument('-n', '--name', default=None,
+                        help='Name of the image')
+    parser.add_argument('-N', '--random-name', default=None,
+                        help='Prefix for random name of an image')
+    parser.add_argument('-d', '--description', default=None,
+                        help='Description of the image')
+    parser.add_argument('--no-reboot', default=False, action='store_true',
+                        help='If specified, the instance will not be rebooted during the bundle process.')
+    parser.add_argument('-b', '--block-device-mapping', default=None,
+                        help='')
+    args = parser.parse_args()
+    assert args.block_device_mapping is None, "Don't support block device mappings yet"
+    return args
+
+def call_ec2(action, params):
+    pass
+
+if '__main__' == __name__:
+    args = get_args()
+    import datetime
+    import time
+    if args.name is None:
+        from amitools.util import random_name
+        args.name = random_name(args.random_name)
+    params = {
+        'InstanceId' : args.instance_id,
+        'Name'       : args.name,
+        'NoReboot'   : False,
+        }
+    if args.description is not None:
+        params['description'] = args.description
+    if args.no_reboot:
+        params['NoReboot'] = True
+    image_id = call_ec2('CreateImage', params)
+    # AMI image creation started. While that's cooking, set up tags
+    source_image_id = call_ec2('DescribeInstances', {
+            'InstanceId.0' : args.instance_id,
+            })
+    tags = {
+        'source_image'     : source_image_id,
+        'source_instance'  : args.instance_id,
+        'create_date'      : datetime.datetime.now(),
+        'create_timestamp' : int(time.time()),
+        }
+    params = {
+        'ResourceId.0' : image_id,
+        }
+    for ii, key in enumerate(sorted(tags.keys())):
+        value = tags[key]
+        params['Tag.{}.Key'.format(ii)] = key
+        params['Tag.{}.Value'.format(ii)] = value
+    call_ec2('CreateTags', params)
