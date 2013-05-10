@@ -1,0 +1,4 @@
+*.pyc
+*~
+todo
+local.env
