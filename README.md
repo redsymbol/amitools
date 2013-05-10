@@ -198,7 +198,11 @@ tagged in the same way ami-create-images does - for the same reasons.
 (not implemented yet)
 
 Tags an existing image in the same way that ami-create-image does. You
-must supply all the values yourself.
+must supply the values yourself.
+
+This is used when you have a pre-existing AMI which you want to work
+together with amitools; by giving it the right tag values, it can
+integrate just as if it was created by ami-create-image.
 
 # Author
 
