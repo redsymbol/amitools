@@ -196,3 +196,14 @@ tagged in the same way ami-create-images does - for the same reasons.
 
 Tags an existing image in the same way that ami-create-image does. You
 must supply all the values yourself.
+
+# Author
+
+[Aaron Maxwell](http://redsymbol.net). To give bug reports,
+complaints, praise, massive cash donations, etc., contact him at
+amax@redsymbol.net .
+
+# License
+
+Copyright 2013 Aaron Maxwell. Licensed under GPL v.3. 
+All other rights reserved.
