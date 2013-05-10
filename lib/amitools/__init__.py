@@ -1,0 +1,103 @@
+import time
+
+class TimeoutException(Exception):
+    pass
+
+def single_or_none(items):
+    '''
+    If the list items is empty, return None.
+    If the list items has one element, return that element.
+    If the list items has more than one element, trigger an AssertionError.
+    '''
+    assert len(items) <= 1, items
+    if len(items) > 0:
+        return items[0]
+    return None
+
+def get_instance(conn, instance_id):
+    reservations = conn.get_all_instances([instance_id])
+    instances = instances_of(reservations)
+    return single_or_none(instances)
+
+def instances_of(reservations):
+    '''
+    Fetch a list of all instances in a list of reservations
+
+    Handy for translating the results of boto's
+    EC2Connection.get_all_instances into a list of instances.
+    
+    '''
+    return [instance
+            for reservation in reservations
+            for instance in reservation.instances
+            ]
+
+class ResourceWatcher(object):
+    # time in seconds to wait between polls
+    WAIT = 10
+    # How long to wait before giving up, in seconds
+    TIMEOUT = 5 * 60
+    # Optionally define to have subclass automatically assert resource ID has a certain prefix
+    RESOURCE_PREFIX = None
+    
+    def __init__(self, resource_id, conn):
+        if self.RESOURCE_PREFIX:
+            assert resource_id.startswith(self.RESOURCE_PREFIX), resource_id
+        self.resource_id = resource_id
+        self.resource = None
+        self.conn = conn
+        
+    def waiton_exists(self):
+        state = self.state()
+        deadline = time.time() + self.TIMEOUT
+        while state is None:
+            time.sleep(self.WAIT)
+            if time.time() > deadline:
+                raise TimeoutException(self.resource_id)
+            state = self.state()
+        return state
+            
+    def state(self):
+        '''
+        Contract:
+          If the resource with the given ID exists, return its state.
+          If the resource does NOT exist, return None.
+        '''
+        self.update_resource()
+        if self.resource:
+            current_state = self.resource.state
+        else:
+            current_state = None
+        return current_state
+
+    def update_resource(self):
+        '''
+        Freshly get the relevant resource object, set to self.resource
+
+        If the resource does not exist, set self.resource to None
+        '''
+        assert False, 'subclass must implement'
+
+class EC2InstanceWatcher(ResourceWatcher):
+    RESOURCE_PREFIX = 'i-'
+    def update_resource(self):
+        reservations = self.conn.get_all_instances([self.resource_id])
+        instances = instances_of(reservations)
+        self.resource = single_or_none(instances)
+
+class EC2ImageWatcher(ResourceWatcher):
+    RESOURCE_PREFIX = 'ami-'
+    def update_resource(self):
+        images = self.conn.get_all_images([self.resource_id])
+        self.resource = single_or_none(images)
+
+def random_name(prefix=None):
+    import time
+    from random import randint
+    from sys import maxsize
+    prefix = prefix or 'AMI'
+    return '{}-{}-{}'.format(
+        prefix,
+        int(time.time()),
+        randint(maxsize >> 3, maxsize),
+        )
