@@ -141,3 +141,41 @@ def ec2connect():
     region = os.environ['AWS_DEFAULT_REGION']
     return connect_to_region(region, aws_access_key_id=access_key, aws_secret_access_key=secret_key)
 
+DATETIME_F = ''.join([
+        # 20110909T233600Z
+        '%Y',
+        '%m',
+        '%d',
+        'T',
+        '%H',
+        '%M',
+        '%S',
+        'Z',
+        ])
+
+def datefmt(dt):
+    return dt.strftime(DATETIME_F)
+
+def dateparse(dt_str):
+    import datetime
+    return datetime.datetime.strptime(dt_str, DATETIME_F)
+
+def totimestamp(dt):
+    from calendar import timegm
+    return timegm(dt.timetuple())
+
+def tag_image(conn, image_id, source_image_id, source_instance_id, when):
+    '''
+    conn               : boto.ec2.connection.EC2Connection
+    image_id           : AMI ID
+    source_image_id    : str
+    source_instance_id : str
+    when               : datetime.datetime
+    '''
+    tags = {
+        'source_image'     : source_image_id,
+        'source_instance'  : source_instance_id,
+        'create_date'      : datefmt(when),
+        'create_timestamp' : totimestamp(when),
+        }
+    conn.create_tags([image_id], tags)

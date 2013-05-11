@@ -35,6 +35,7 @@ if '__main__' == __name__:
         get_instance,
         random_name,
         ec2connect,
+        tag_image,
         )
 
     if args.name is None:
@@ -56,13 +57,13 @@ if '__main__' == __name__:
     # AMI image creation started. While that's cooking, set up tags
     image = image_watcher.resource
     source_instance = get_instance(conn, args.instance_id)
-    tags = {
-        'source_image'     : source_instance.image_id,
-        'source_instance'  : args.instance_id,
-        'create_date'      : datetime.datetime.now(),
-        'create_timestamp' : int(time.time()),
-        }
-    conn.create_tags([image_id], tags)
+    tag_image(
+        conn,
+        image.id,
+        source_instance.image_id,
+        args.instance_id,
+        datetime.datetime.utcnow(),
+        )
     # Done, now report the image
     print('\t'.join([
             'IMAGE',
