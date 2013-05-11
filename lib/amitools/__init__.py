@@ -179,3 +179,25 @@ def tag_image(conn, image_id, source_image_id, source_instance_id, when):
         'create_timestamp' : totimestamp(when),
         }
     conn.create_tags([image_id], tags)
+
+def build_chain(start_image_id, images):
+    images_by_id = dict(
+        (image.id, image)
+        for image in images)
+    assert start_image_id in images_by_id, start_image_id
+    start_image = images_by_id[start_image_id]
+    image_source_map = dict(
+        (image.id, image.tags['source_image'])
+        for image in images)
+    assert start_image.id in image_source_map
+    chain = [start_image.id]
+    current_id = start_image.id
+    while True:
+        try:
+            next_image_id = image_source_map[current_id]
+        except KeyError:
+            break
+        chain.append(next_image_id)
+        current_id = next_image_id
+    return chain
+
