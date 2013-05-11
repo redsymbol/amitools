@@ -20,7 +20,19 @@ def get_args():
                         help='AMI ID')
     parser.add_argument('state', default='available', nargs='?', choices=STATE_CHOICES, 
                         help='State to wait for')
+    parser.add_argument('--nowait-exists', default=False, action='store_true',
+                        help='Don\'t wait for the image ID to exist before checking state')
     return parser.parse_args()
+
+TERMINAL_FAIL_STATES = {
+    'available' : {'failed'},
+    'pending'   : {'failed'},
+    'failed'    : {'available'},
+    }
+
+TERMINAL_SUCCESS_STATES = {
+    'pending'   : {'available'},
+    }
 
 if '__main__' == __name__:
     import sys
@@ -32,11 +44,16 @@ if '__main__' == __name__:
         )
     conn = ec2connect()
     image_watcher = EC2ImageWatcher(args.image_id, conn)
-    try:
-        current_state = image_watcher.waiton_exists()
-    except TimeoutException as ex:
-        print('FATAL\tTimed out waiting for image ID {} to exist'.format(args.image_id))
-        sys.exit(1)
+    current_state = image_watcher.state()
+    if current_state is None:
+        if args.nowait_exists:
+            print('ERROR\tNo image ID {}'.format(args.image_id))
+            sys.exit(1)
+        try:
+            current_state = image_watcher.waiton_exists()
+        except TimeoutException as ex:
+            print('FATAL\tTimed out waiting for image ID {} to exist'.format(args.image_id))
+            sys.exit(1)
     assert current_state is not None
     if 'exists' != args.state:
         if current_state != args.state:
@@ -46,3 +63,4 @@ if '__main__' == __name__:
                 print('FATAL\tTimed out waiting for image ID {} to reach state {} - lastest was {}'.format(
                         args.image_id, args.state, current_state))
                 sys.exit(1)
+

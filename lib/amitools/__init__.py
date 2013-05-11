@@ -1,6 +1,10 @@
 import time
 
-class TimeoutException(Exception):
+class AmitoolsException(Exception):
+    pass
+class TimeoutException(AmitoolsException):
+    pass
+class ImageNotFound(AmitoolsException):
     pass
 
 def single_or_none(items):
@@ -72,6 +76,7 @@ class ResourceWatcher(object):
         Contract:
           If the resource with the given ID exists, return its state.
           If the resource does NOT exist, return None.
+          
         '''
         self.update_resource()
         if self.resource:
@@ -98,8 +103,15 @@ class EC2InstanceWatcher(ResourceWatcher):
 class EC2ImageWatcher(ResourceWatcher):
     RESOURCE_PREFIX = 'ami-'
     def update_resource(self):
-        images = self.conn.get_all_images([self.resource_id])
-        self.resource = single_or_none(images)
+        from boto.exception import EC2ResponseError
+        self.resource = None
+        try:
+            images = self.conn.get_all_images([self.resource_id])
+        except EC2ResponseError as ex:
+            if 'InvalidAMIID.NotFound' != ex.error_code:
+                raise
+        else:
+            self.resource = single_or_none(images)
 
 def random_name(prefix=None):
     import time

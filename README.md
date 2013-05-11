@@ -138,7 +138,9 @@ For automating AMI operations in scripts, where robustness is
 typically way more important than execution time, this is the
 preferred behavior. If you want to disable this check, use the
 --nowait-exist option. This will cause ami-waiton to exit with an
-error if the AMI isn't immediately visible.
+error if the AMI isn't immediately visible.  (This option is only
+supported with states other than "exist", because that's what makes
+sense.)
 
 Very often, when using this command, you just want to block until the
 AMI is in an available state.  Use ami-waiton-available as a
