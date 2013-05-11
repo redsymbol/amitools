@@ -8,8 +8,8 @@ and working with Amazon machine images.
  - ami-create-image - Like ec2-create-image, but way better
  - ami-waiton - Wait for the image to reach a useful state
  - ami-describe-anscestors - What images are this image derived from?
- - ami-describe-children - What images are derived from this image?
  - ami-tag-image - Tag an existing image like ami-create-image does
+ - ami-clone - Clone an image so you always have your own version
 
 ## Credentials & Region Setup
 
@@ -66,12 +66,15 @@ geneology. These include:
  - create_date        When it was created (human-readable)
  - create_timestamp   When it was created (seconds since epoch)
 
+(create_date and create_timestamp encode the same information, just
+represented in two differently convenient formats.)
+
 ### Auto-Naming
 
 If you are generating images with any frequency, you have probably
 been annoyed by the requirement to supply a unique name for each image
 you create. Once you get to the point where you are creating several
-images per week, or even per day, some people find it easier to simply
+images per week, or even per day, some teams find it easier to simply
 keep track of the AMI IDs rather than referencing the name.
 
 By using the -N or --random-name options, ami-create-image will
@@ -100,7 +103,7 @@ timestamp is the number of seconds since the epoch - an integer. (In
 the highly unlikely event the first generated name is taken,
 ami-create-image will generating a new name until it finds a unique one.)
 
-## ami-waiton and ami-waiton-available
+## ami-waiton
 (not implemented yet)
 
 Robustly wait on an AMI to be in a particular state. Intelligently
@@ -108,11 +111,12 @@ handle latency and race conditions.
 
 ami-waiton is the generic form. Use it like:
 
-  ami-waiton [--dumb] [ --nowait-exist ] AMI_ID STATE
+  ami-waiton [--dumb] [ --nowait-exist ] AMI_ID [STATE]
 
-Where STATE is one of "available", "pending" or "failed" or
-"exists". The state of "exists" just means "this AMI is in any state
-at all".
+Where STATE is one of "available", "pending", "failed" or "exists".
+The default value is "availble", because very often, when using this
+command, you will just want to block until the AMI is in the available
+state.
 
 By default, some intelligence is applied. If you specify "available",
 and the AMI is in state "failed", it will never be available;
@@ -124,14 +128,15 @@ means, "wait until it is in the pending state, or better."
 If you'd like this magic disabled, use the --dumb option. This will
 strictly interpret the state argument.
 
-Sometimes, there is a delay between the time in which you create the
-AMI and when it is readable at all by the Amazon API.  In other words,
-there is a "pre-pending" state in which a query to list all pending
-images may not include the new one - even though the create command
-you just issued already gave you the AMI ID.
+The state of "exists" just means "this AMI is in any state at
+all". Sometimes, there is a delay between the time in which you create
+the AMI and when it is readable at all by the Amazon API: a kind of
+"pre-pending" state in which a query to list all pending images may
+not include the new one - even though the create command you just
+issued already gave you the AMI ID.
 
-By default, if this initially happens, ami-waiton assumes that the AMI
-is still in the pre-pending state, and will keep re-checking for some
+By default, if this initially happens, ami-waiton assumes the image is
+still in the pre-pending state, and will keep re-checking for some
 time before giving up.
 
 For automating AMI operations in scripts, where robustness is
@@ -141,17 +146,6 @@ preferred behavior. If you want to disable this check, use the
 error if the AMI isn't immediately visible.  (This option is only
 supported with states other than "exist", because that's what makes
 sense.)
-
-Very often, when using this command, you just want to block until the
-AMI is in an available state.  Use ami-waiton-available as a
-shortcut. Use it like:
-
-  ami-waiton-available AMI_ID
-
-This is exactly equivalent to "ami-waiton AMI_ID available" with no
-options. It has the same defaults as ami-waiton (the aforementioned
-intelligence, and waiting through the pre-pending state), but these
-cannot be disabled. If you need that, use ami-waiton instead.
 
 ## ami-describe-anscestors
 (not implemented yet)
@@ -165,11 +159,11 @@ ami-describe-anscestors answers questions like:
 There is a prerequisite: it only works with images that were created
 via ami-create-images, or those AMIs that are externally tagged in the
 same way ami-create-images does. If you build a toolchain that creates
-your AMIs via ami-create-images, ami-describe-family can tell you
+your AMIs via ami-create-images, ami-describe-anscestors can tell you
 where any image ID sits in the hierarchy.
 
 Usage:
-  ami-describe-family [-C|--columns] START_AMI_ID
+  ami-describe-anscestors [-C|--columns] START_AMI_ID
 
 If invoked with a START_AMI_ID value of ami-55555555, This may show something like:
 IMAGE_ID      CREATE_DATE                   CREATE_TS  SOURCE_INSTANCE
@@ -183,28 +177,48 @@ instance i-44444444, on April 16th 2013.  This output also reveals
 that ami-44444444 was created from an instance run from i-33333333,
 and so on.
 
-## ami-describe-children
+## ami-clone
 (not implemented yet)
 
-ami-describe-children answers questions like:
+ami-clone makes a copy of an image. It functions similar to
+[CopyImage](http://docs.aws.amazon.com/AWSEC2/latest/APIReference/ApiReference-query-CopyImage.html)
+or
+[ec2-copy-image](http://docs.aws.amazon.com/AWSEC2/latest/CommandLineReference/ApiReference-cmd-CopyImage.html),
+but instead of making a copy in a new region, it makes a copy in the
+source image's region - with a new AMI ID.
 
- - What images were created from instances running this image?
- - What are the known "grandchildren" images, and so on?
- - When did all the above happen?
+Why would you want to do this? As far as I know, there is only one
+good reason, but it's a very important one. If you are creating a tree
+of images which use a public AMI supplied by a third party, it's wise
+to make your own copy in case the third-party creator someday decides
+to withdraw the original.
 
-Like ami-describe-anscestors, it works only with images that were
-created via ami-create-images, or those AMIs that are externally
-tagged in the same way ami-create-images does - for the same reasons.
+In other words, here's what you do NOT want to happen:
 
-## ami-tag-image
-(not implemented yet)
+ 1. You are building a server based off of Ubuntu, or Red Hat, or
+    whatever, and you get an AMI ID of their distribution off of their
+    website. Call this the "foundation image".
 
-Tags an existing image in the same way that ami-create-image does. You
-must supply the values yourself.
+ 1. You create a series of tools to build a half-dozen different image
+    types, all based on the foundation, and whose instances support
+    everything from web servers to database services to devops
+    orchestration to bastion services and more.  All these tools are
+    in version control, allowing you to rebuild them at any time... as
+    long as you can run instances from the foundation image.
 
-This is used when you have a pre-existing AMI which you want to work
-together with amitools; by giving it the right tag values, it can
-integrate just as if it was created by ami-create-image.
+ 1. Suddenly, unexpectedly, the third party decides to revoke the
+    foundation image. Now you can't rebuild things from scratch until
+    you cobble together some foundation image of your own, and be
+    ready to spend the next few months uncovering and troubleshooting
+    legions of obscure bugs.
+
+If you create your own, private clone, and use **that** as the
+foundation, the last step will happen to your competitors instead of
+you.
+
+In addition, ami-clone will give the new image the same tags as the
+other images created by amitools, so you always know where (and when)
+it fits in your AMI hierarchy.
 
 # Author
 
