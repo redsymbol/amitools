@@ -4,6 +4,7 @@ from amitools import clsetup
 clsetup()
 
 def get_args():
+    from amitools import common_argparser
     import argparse
     import re
     parser = argparse.ArgumentParser(
@@ -18,7 +19,7 @@ They are controlled by this script via the --create-date and
 differ, you must supply exactly one of these options, but *not
 both*. Whichever you supply will be used to calculate the other.
 ''',
-        formatter_class=argparse.RawDescriptionHelpFormatter,
+        parents = [common_argparser],
         )
     parser.add_argument('--source-image', required=True,
                         help='Image ID of source AMI (tag: source_image)')
@@ -31,6 +32,8 @@ both*. Whichever you supply will be used to calculate the other.
     parser.add_argument('image_id',
                         help='ID of AMI to set tags on')
     args = parser.parse_args()
+
+    # custom arg validation
     if args.create_timestamp is None and args.create_date is None:
         parser.error('You must supply exactly one of the --create_date or --create_timestamp options')
     if (args.create_timestamp is not None) and (args.create_date is not None):
@@ -43,6 +46,7 @@ both*. Whichever you supply will be used to calculate the other.
         parser.error('source_instance must start with "i-"')
     if (args.create_date is not None) and not re.match(r'\d{8}T\d{6}Z$', args.create_date):
         parser.error('If supplied, create_date must be a UTC date-time formated like "YYYYMMDDTHHMMSSZ"')
+        
     return args
 
 if '__main__' == __name__:
@@ -58,8 +62,11 @@ if '__main__' == __name__:
     else:
         assert args.create_timestamp is None, args.create_timestamp
         when = dateparse(args.create_date)
-    tag_image(ec2connect(),
-              args.image_id,
-              args.source_image,
-              args.source_instance,
-              when)
+    conn = ec2connect(args.region)
+    tag_image(
+        conn,
+        args.image_id,
+        args.source_image,
+        args.source_instance,
+        when,
+        )

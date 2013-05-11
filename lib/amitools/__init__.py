@@ -7,6 +7,17 @@ class TimeoutException(AmitoolsException):
 class ImageNotFound(AmitoolsException):
     pass
 
+import argparse
+common_argparser = argparse.ArgumentParser(
+    add_help=False,
+    formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+common_argparser.add_argument('-r', '--region', default=None,
+                        help='''Specify REGION as the web service region to use.
+Overrides the value specified by AWS_DEFAULT_REGION.
+''')
+
+
 def single_or_none(items):
     '''
     If the list items is empty, return None.
@@ -133,12 +144,12 @@ def clsetup():
     import signal
     signal.signal(signal.SIGINT, sigint_exit)
 
-def ec2connect():
+def ec2connect(region=None):
     import os
     from boto.ec2 import connect_to_region
     access_key = os.environ['AWS_ACCESS_KEY_ID']
     secret_key = os.environ['AWS_SECRET_ACCESS_KEY']
-    region = os.environ['AWS_DEFAULT_REGION']
+    region = region or os.environ['AWS_DEFAULT_REGION']
     return connect_to_region(region, aws_access_key_id=access_key, aws_secret_access_key=secret_key)
 
 DATETIME_F = ''.join([

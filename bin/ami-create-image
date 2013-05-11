@@ -5,13 +5,13 @@ clsetup()
 
 def get_args():
     import argparse
-    parser = argparse.ArgumentParser(description='ami-create-image - Like ec2-create-image, but way better')
+    from amitools import common_argparser
+    parser = argparse.ArgumentParser(
+        description='ami-create-image - Like ec2-create-image, but way better',
+        parents = [common_argparser],
+        )
     parser.add_argument('instance_id',
                         help='Instance ID to create image from')
-    parser.add_argument('-r', '--region',
-                        help='''Specify REGION as the web service region to use.
-Overrides the value specified by AWS_DEFAULT_REGION.
-''')
     parser.add_argument('-n', '--name', default=None,
                         help='Name of the image')
     parser.add_argument('-N', '--random-name', default=None,
@@ -20,10 +20,11 @@ Overrides the value specified by AWS_DEFAULT_REGION.
                         help='Description of the image')
     parser.add_argument('--no-reboot', default=False, action='store_true',
                         help='If specified, the instance will not be rebooted during the bundle process.')
-    parser.add_argument('-b', '--block-device-mapping', default=None,
-                        help='')
+    # parser.add_argument('-b', '--block-device-mapping', default=None,
+    #                     help='')
     args = parser.parse_args()
-    assert args.block_device_mapping is None, "Don't support block device mappings yet"
+    if not args.instance_id.startswith('i-'):
+        parser.error('instance_id must start with "i-"')
     return args
 
 if '__main__' == __name__:
@@ -40,12 +41,9 @@ if '__main__' == __name__:
 
     if args.name is None:
         args.name = random_name(args.random_name)
-    if args.description is not None:
-        params['description'] = args.description
-    if args.no_reboot:
-        params['NoReboot'] = True
-
-    conn = ec2connect()
+        
+    conn = ec2connect(args.region)
+    
     image_id = conn.create_image(
         args.instance_id,
         args.name,

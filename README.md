@@ -9,6 +9,9 @@ and working with Amazon machine images.
  - ami-waiton - Wait for the image to reach a useful state
  - ami-describe-anscestors - What images are this image derived from?
  - ami-tag-image - Tag an existing image like ami-create-image does
+
+And coming soon (see README.future.md for details):
+ - ami-describe-children - Show what images are derived from this one
  - ami-clone - Clone an image so you always have your own version
 
 ## Credentials & Region Setup
@@ -176,49 +179,6 @@ run from ami-44444444. The image-creation operation was invoked on
 instance i-44444444, on April 16th 2013.  This output also reveals
 that ami-44444444 was created from an instance run from i-33333333,
 and so on.
-
-## ami-clone
-(not implemented yet)
-
-ami-clone makes a copy of an image. It functions similar to
-[CopyImage](http://docs.aws.amazon.com/AWSEC2/latest/APIReference/ApiReference-query-CopyImage.html)
-or
-[ec2-copy-image](http://docs.aws.amazon.com/AWSEC2/latest/CommandLineReference/ApiReference-cmd-CopyImage.html),
-but instead of making a copy in a new region, it makes a copy in the
-source image's region - with a new AMI ID.
-
-Why would you want to do this? As far as I know, there is only one
-good reason, but it's a very important one. If you are creating a tree
-of images which use a public AMI supplied by a third party, it's wise
-to make your own copy in case the third-party creator someday decides
-to withdraw the original.
-
-In other words, here's what you do NOT want to happen:
-
- 1. You are building a server based off of Ubuntu, or Red Hat, or
-    whatever, and you get an AMI ID of their distribution off of their
-    website. Call this the "foundation image".
-
- 1. You create a series of tools to build a half-dozen different image
-    types, all based on the foundation, and whose instances support
-    everything from web servers to database services to devops
-    orchestration to bastion services and more.  All these tools are
-    in version control, allowing you to rebuild them at any time... as
-    long as you can run instances from the foundation image.
-
- 1. Suddenly, unexpectedly, the third party decides to revoke the
-    foundation image. Now you can't rebuild things from scratch until
-    you cobble together some foundation image of your own, and be
-    ready to spend the next few months uncovering and troubleshooting
-    legions of obscure bugs.
-
-If you create your own, private clone, and use **that** as the
-foundation, the last step will happen to your competitors instead of
-you.
-
-In addition, ami-clone will give the new image the same tags as the
-other images created by amitools, so you always know where (and when)
-it fits in your AMI hierarchy.
 
 # Author
 

@@ -5,22 +5,26 @@ clsetup()
 
 def get_args():
     import argparse
+    from amitools import common_argparser
     parser = argparse.ArgumentParser(
-        description='',
+        description='Determine what images an image is derived from',
         epilog='',
-        formatter_class=argparse.RawDescriptionHelpFormatter,
+        parents = [common_argparser],
         )
     parser.add_argument('image_id',
                         help='ID of AMI to find anscestry of')
-    return parser.parse_args()
+    args = parser.parse_args()
+    if not args.image_id.startswith('ami-'):
+        parser.error('image_id must start with "ami-"')
+    return args
 
 if '__main__' == __name__:
+    args = get_args()
     from amitools import (
         ec2connect,
         build_chain,
         )
-    args = get_args()
-    conn = ec2connect()
+    conn = ec2connect(args.region)
     all_images = conn.get_all_images(filters={'tag-key':'source_image'})
     try:
         chain = build_chain(args.image_id, all_images)

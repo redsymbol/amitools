@@ -11,10 +11,11 @@ STATE_CHOICES = [
     ]
 def get_args():
     import argparse
+    from amitools import common_argparser
     parser = argparse.ArgumentParser(
         description='Wait for an AMI to reach a particular state',
         epilog='',
-        formatter_class=argparse.RawDescriptionHelpFormatter,
+        parents = [common_argparser],
         )
     parser.add_argument('image_id',
                         help='AMI ID')
@@ -22,7 +23,10 @@ def get_args():
                         help='State to wait for')
     parser.add_argument('--nowait-exists', default=False, action='store_true',
                         help='Don\'t wait for the image ID to exist before checking state')
-    return parser.parse_args()
+    args = parser.parse_args()
+    if not args.image_id.startswith('ami-'):
+        parser.error('image_id must start with "ami-"')
+    return args
 
 TERMINAL_FAIL_STATES = {
     'available' : {'failed'},
@@ -42,7 +46,7 @@ if '__main__' == __name__:
         ec2connect,
         TimeoutException,
         )
-    conn = ec2connect()
+    conn = ec2connect(args.region)
     image_watcher = EC2ImageWatcher(args.image_id, conn)
     current_state = image_watcher.state()
     if current_state is None:
