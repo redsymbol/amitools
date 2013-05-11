@@ -1,1 +1,48 @@
 #!/usr/bin/env python
+
+from amitools import clsetup
+clsetup()
+
+STATE_CHOICES = [
+    'exists',
+    'available',
+    'pending',
+    'failed',
+    ]
+def get_args():
+    import argparse
+    parser = argparse.ArgumentParser(
+        description='Wait for an AMI to reach a particular state',
+        epilog='',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        )
+    parser.add_argument('image_id',
+                        help='AMI ID')
+    parser.add_argument('state', default='available', nargs='?', choices=STATE_CHOICES, 
+                        help='State to wait for')
+    return parser.parse_args()
+
+if '__main__' == __name__:
+    import sys
+    args = get_args()
+    from amitools import (
+        EC2ImageWatcher,
+        ec2connect,
+        TimeoutException,
+        )
+    conn = ec2connect()
+    image_watcher = EC2ImageWatcher(args.image_id, conn)
+    try:
+        current_state = image_watcher.waiton_exists()
+    except TimeoutException as ex:
+        print('FATAL\tTimed out waiting for image ID {} to exist'.format(args.image_id))
+        sys.exit(1)
+    assert current_state is not None
+    if 'exists' != args.state:
+        if current_state != args.state:
+            try:
+                image_watcher.waiton(args.state)
+            except TimeoutException as ex:
+                print('FATAL\tTimed out waiting for image ID {} to reach state {} - lastest was {}'.format(
+                        args.image_id, args.state, current_state))
+                sys.exit(1)

@@ -57,6 +57,16 @@ class ResourceWatcher(object):
             state = self.state()
         return state
             
+    def waiton(self, target_state):
+        state = self.waiton_exists()
+        deadline = time.time() + self.TIMEOUT
+        while state != target_state:
+            time.sleep(self.WAIT)
+            if time.time() > deadline:
+                raise TimeoutException(self.resource_id)
+            state = self.state()
+        return state
+            
     def state(self):
         '''
         Contract:
@@ -101,3 +111,21 @@ def random_name(prefix=None):
         int(time.time()),
         randint(maxsize >> 3, maxsize),
         )
+
+def sigint_exit(signum, frame):
+    import sys
+    sys.stderr.write('\n')
+    sys.exit(1)
+
+def clsetup():
+    import signal
+    signal.signal(signal.SIGINT, sigint_exit)
+
+def ec2connect():
+    import os
+    from boto.ec2 import connect_to_region
+    access_key = os.environ['AWS_ACCESS_KEY_ID']
+    secret_key = os.environ['AWS_SECRET_ACCESS_KEY']
+    region = os.environ['AWS_DEFAULT_REGION']
+    return connect_to_region(region, aws_access_key_id=access_key, aws_secret_access_key=secret_key)
+
