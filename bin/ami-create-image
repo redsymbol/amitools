@@ -9,12 +9,16 @@ def get_args():
     parser = argparse.ArgumentParser(
         description='ami-create-image - Like ec2-create-image, but way better',
         parents = [common_argparser],
+        epilog='''By default, a random name is generated for the AMI. You can supply
+a prefix with -N/--random-name-prefix, or an explicit name with
+ -n/--name.
+'''
         )
     parser.add_argument('instance_id',
                         help='Instance ID to create image from')
     parser.add_argument('-n', '--name', default=None,
                         help='Name of the image')
-    parser.add_argument('-N', '--random-name', default=None,
+    parser.add_argument('-N', '--random-name-prefix',
                         help='Prefix for random name of an image')
     parser.add_argument('-d', '--description', default=None,
                         help='Description of the image')
@@ -31,16 +35,18 @@ if '__main__' == __name__:
     args = get_args()
     import datetime
     import time
-    from amitools import (
-        EC2ImageWatcher,
+    from amitools.watch import EC2ImageWatcher
+    from amitools.util import (
         get_instance,
         random_name,
+        )
+    from amitools import (
         ec2connect,
         tag_image,
         )
-
+    
     if args.name is None:
-        args.name = random_name(args.random_name)
+        args.name = random_name(args.random_name_prefix)
         
     conn = ec2connect(args.region)
     

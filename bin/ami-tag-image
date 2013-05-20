@@ -52,10 +52,10 @@ both*. Whichever you supply will be used to calculate the other.
 if '__main__' == __name__:
     args = get_args()
     import datetime
+    from amitools.dt import dateparse
     from amitools import (
         ec2connect,
         tag_image,
-        dateparse,
         )
     if args.create_date is None:
         when = datetime.datetime.utcfromtimestamp(args.create_timestamp)

@@ -44,8 +44,8 @@ if '__main__' == __name__:
     from amitools import (
         EC2ImageWatcher,
         ec2connect,
-        TimeoutException,
         )
+    from amitools.exceptions import TimeoutException
     conn = ec2connect(args.region)
     image_watcher = EC2ImageWatcher(args.image_id, conn)
     current_state = image_watcher.state()

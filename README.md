@@ -6,9 +6,11 @@ and working with Amazon machine images.
 # What's In The Box
 
  - ami-create-image - Like ec2-create-image, but way better
- - ami-waiton - Wait for the image to reach a useful state
- - ami-describe-anscestors - What images are this image derived from?
+ - ami-waiton - Wait for the image to reach a useful state * 
+ - ami-describe-anscestors - What images are this image derived from? *
  - ami-tag-image - Tag an existing image like ami-create-image does
+
+(Items marked with "*" are mostly but not yet completely implemented.)
 
 And coming soon (see README.future.md for details):
  - ami-describe-children - Show what images are derived from this one
@@ -51,7 +53,6 @@ Unless noted otherwise, each command takes the following options:
   - -r/--region  Operate on the given region
 
 ## ami-create-image
-(not implemented yet)
 
 This is similar to the ec2-create-image command from the AWS command
 line tools, with some differences: 
@@ -80,43 +81,44 @@ you create. Once you get to the point where you are creating several
 images per week, or even per day, some teams find it easier to simply
 keep track of the AMI IDs rather than referencing the name.
 
-By using the -N or --random-name options, ami-create-image will
-generate a unique AMI name for you. You can optionally specify a
-prefix for that name.  For example:
+If you want to grant an explicit name, do so with the -n/--name
+option. But if you do not, ami-create-image generates a random name
+for the image, with a format like:
 
-  ami-create-image -N i-12345678 
+  <prefix>-<timestamp>-<big random number>
 
-This will generate a completely random unique name, something like
-"AMI-1366162881-135159873121564" By default, the prefix is
-unimaginatively "AMI". Choose a different prefix by giving -N or
---random-name an argument (these two options are completely
+(Note that this auto-naming is the default behavior, unless you specify
+an explicit name with -n/--name.)
+
+"timestamp" is the number of seconds since the epoch - an integer. By
+default, the prefix is unimaginatively "AMI", which means names are
+generated that look like (for example)
+"AMI-1366162881-135159873121564".  Choose a different prefix by giving
+-N or --random-name an argument (these two options are completely
 interchangeable):
 
   ami-create-image --random-name database i-12345678 
 
 This will give the new image a name like
 "database-1366162881-135159873121564".  It can be useful for easy type
-classification.
+classification of AMIs based on their name.
 
-The format of the name is like:
-
-  <prefix>-<timestamp>-<big random number>
-
-timestamp is the number of seconds since the epoch - an integer. (In
-the highly unlikely event the first generated name is taken,
-ami-create-image will generating a new name until it finds a unique one.)
+(In the highly unlikely event the first generated name is taken,
+ami-create-image will generating a new name until it finds a unique
+one.)
 
 ## ami-waiton
-(not implemented yet)
 
-Robustly wait on an AMI to be in a particular state. Intelligently
-handle latency and race conditions.
+(partially implemented; some of the promised intelligence, and the --dumb option, are not yet done)
 
-ami-waiton is the generic form. Use it like:
+ami-waiton robustly waits for an AMI to be in a particular
+state, intelligently handling latency and race conditions.
+
+Use it like:
 
   ami-waiton [--dumb] [ --nowait-exist ] AMI_ID [STATE]
 
-Where STATE is one of "available", "pending", "failed" or "exists".
+where STATE is one of "available", "pending", "failed" or "exists".
 The default value is "availble", because very often, when using this
 command, you will just want to block until the AMI is in the available
 state.
@@ -151,7 +153,7 @@ supported with states other than "exist", because that's what makes
 sense.)
 
 ## ami-describe-anscestors
-(not implemented yet)
+(partially implemented; only shows image IDs, not other columns yet)
 
 ami-describe-anscestors answers questions like:
 
