@@ -31,9 +31,10 @@ credentials file.
 ### Environment Method
 
 Export the following definitions in your shell environment:
-  AWS_ACCESS_KEY_ID=<your access key>
-  AWS_SECRET_ACCESS_KEY=<your secret key>
-  AWS_DEFAULT_REGION=<code for default region>
+
+    AWS_ACCESS_KEY_ID=&lt;your access key&gt;
+    AWS_SECRET_ACCESS_KEY=&lt;your secret key&gt;
+    AWS_DEFAULT_REGION=&lt;code for default region&gt;
 
 (Make sure they are exported. So in bash, for example, that means
 using the "export" keyword.)
@@ -42,9 +43,9 @@ using the "export" keyword.)
 
 Create a file whose content looks like this:
 
-  aws_access_key_id=<your access key>
-  aws_secret_access_key=<your secret key>
-  region=<code for default region>
+    aws_access_key_id=&lt;your access key&gt;
+    aws_secret_access_key=&lt;your secret key&gt;
+    region=&lt;code for default region&gt;
 
 Make sure it is not world-readable. Then, export the full path to this
 file in the environment variable AWS_CREDENTIAL_FILE. 
@@ -96,7 +97,7 @@ If you want to grant an explicit name, do so with the -n/--name
 option. But if you do not, ami-create-image generates a random name
 for the image, with a format like:
 
-  <prefix>-<timestamp>-<big random number>
+    &lt;prefix&gt;-&lt;timestamp&gt;-&lt;big random number&gt;
 
 (Note that this auto-naming is the default behavior, unless you specify
 an explicit name with -n/--name.)
@@ -108,7 +109,7 @@ generated that look like (for example)
 -N or --random-name an argument (these two options are completely
 interchangeable):
 
-  ami-create-image --random-name database i-12345678 
+    ami-create-image --random-name database i-12345678 
 
 This will give the new image a name like
 "database-1366162881-135159873121564".  It can be useful for easy type
@@ -127,7 +128,7 @@ state, intelligently handling latency and race conditions.
 
 Use it like:
 
-  ami-waiton [--dumb] [ --nowait-exist ] AMI_ID [STATE]
+    ami-waiton [--dumb] [ --nowait-exist ] AMI_ID [STATE]
 
 where STATE is one of "available", "pending", "failed" or "exists".
 The default value is "availble", because very often, when using this
@@ -179,7 +180,8 @@ your AMIs via ami-create-images, ami-describe-anscestors can tell you
 where any image ID sits in the hierarchy.
 
 Usage:
-  ami-describe-anscestors [-C|--columns] START_AMI_ID
+
+    ami-describe-anscestors [-C|--columns] START_AMI_ID
 
 If invoked with a START_AMI_ID value of ami-55555555, This may show something like:
 IMAGE_ID      CREATE_DATE                   CREATE_TS  SOURCE_INSTANCE
