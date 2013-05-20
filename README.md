@@ -3,6 +3,12 @@ A collection of tools for joyfully working with AWS Machine Images
 AMITools is a collection of command-line tools for creating, querying,
 and working with Amazon machine images.
 
+At the moment (May 2013), it is in a beta. I'd appreciate feedback
+especially on the command line UI, and also reports of bugs or missing
+functionality not called out in the text below. (I'm updating this
+README as I go along.) Message me via github, or (preferred) send
+email to amax at redsymbol dot net.
+
 # What's In The Box
 
  - ami-create-image - Like ec2-create-image, but way better
@@ -48,9 +54,10 @@ the "export" keyword.)
 
 # Command Descriptions
 
-Unless noted otherwise, each command takes the following options:
-
-  - -r/--region  Operate on the given region
+Unless noted otherwise, each command takes a -r/--region option. If
+supplied, this overrides the region specified using one of the methods
+above.  All commands take an -h/--help option explaining how to use
+the tool.
 
 ## ami-create-image
 
@@ -72,6 +79,10 @@ geneology. These include:
 
 (create_date and create_timestamp encode the same information, just
 represented in two differently convenient formats.)
+
+This information is helpful and useful all by itself. However, it's
+used to even greater effect by other tools in this package - both
+current, and planned for the near future.
 
 ### Auto-Naming
 
@@ -186,7 +197,7 @@ and so on.
 
 [Aaron Maxwell](http://redsymbol.net). To give bug reports,
 complaints, praise, massive cash donations, etc., contact him at
-amax@redsymbol.net .
+amax at redsymbol dot net .
 
 # License
 
