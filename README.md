@@ -103,10 +103,10 @@ an explicit name with -n/--name.)
 default, the prefix is unimaginatively "AMI", which means names are
 generated that look like (for example)
 "AMI-1366162881-135159873121564".  Choose a different prefix by giving
--N or --random-name an argument (these two options are completely
+-N or --random-name-prefix an argument (these two options are completely
 interchangeable):
 
-    ami-create-image --random-name database i-12345678 
+    ami-create-image --random-name-prefix database i-12345678 
 
 This will give the new image a name like
 "database-1366162881-135159873121564".  It can be useful for easy type
