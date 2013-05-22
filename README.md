@@ -194,9 +194,12 @@ and so on.
 
 # Author
 
-[Aaron Maxwell](http://redsymbol.net). To give bug reports,
-complaints, praise, massive cash donations, etc., contact him at
-amax at redsymbol dot net .
+Created by [Aaron Maxwell](http://redsymbol.net). To give feedback,
+bug reports, complaints, praise, etc., contact him at amax at
+redsymbol dot net .
+
+Aaron is selectively available as a consultant for AWS/cloud migration
+and architecture projects; reach him at the same email address.
 
 # License
 
