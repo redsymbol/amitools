@@ -50,9 +50,6 @@ Create a file whose content looks like this:
 Make sure it is not world-readable. Then, export the full path to this
 file in the environment variable AWS_CREDENTIAL_FILE. 
 
-(Make sure it is exported. So in bash, for example, that means using
-the "export" keyword.)
-
 # Command Descriptions
 
 Unless noted otherwise, each command takes a -r/--region option. If
