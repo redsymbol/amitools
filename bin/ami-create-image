@@ -40,10 +40,8 @@ if '__main__' == __name__:
         get_instance,
         random_name,
         )
-    from amitools import (
-        ec2connect,
-        tag_image,
-        )
+    from amitools import ec2connect
+    from amitools.util import tag_image
     
     if args.name is None:
         args.name = random_name(args.random_name_prefix)

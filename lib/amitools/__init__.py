@@ -22,22 +22,6 @@ def ec2connect(region=None):
     region = region or os.environ['AWS_DEFAULT_REGION']
     return connect_to_region(region, aws_access_key_id=access_key, aws_secret_access_key=secret_key)
 
-def tag_image(conn, image_id, source_image_id, source_instance_id, when):
-    '''
-    conn               : boto.ec2.connection.EC2Connection
-    image_id           : AMI ID
-    source_image_id    : str
-    source_instance_id : str
-    when               : datetime.datetime
-    '''
-    tags = {
-        'source_image'     : source_image_id,
-        'source_instance'  : source_instance_id,
-        'create_date'      : datefmt(when),
-        'create_timestamp' : totimestamp(when),
-        }
-    conn.create_tags([image_id], tags)
-
 def build_chain(start_image_id, images):
     images_by_id = dict(
         (image.id, image)

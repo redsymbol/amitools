@@ -38,3 +38,22 @@ def random_name(prefix=None):
         randint(maxsize >> 3, maxsize),
         )
 
+def tag_image(conn, image_id, source_image_id, source_instance_id, when):
+    '''
+    conn               : boto.ec2.connection.EC2Connection
+    image_id           : AMI ID
+    source_image_id    : str
+    source_instance_id : str
+    when               : datetime.datetime
+    '''
+    from .dt import (
+        datefmt,
+        totimestamp,
+        )
+    tags = {
+        'source_image'     : source_image_id,
+        'source_instance'  : source_instance_id,
+        'create_date'      : datefmt(when),
+        'create_timestamp' : totimestamp(when),
+        }
+    conn.create_tags([image_id], tags)

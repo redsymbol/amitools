@@ -53,10 +53,8 @@ if '__main__' == __name__:
     args = get_args()
     import datetime
     from amitools.dt import dateparse
-    from amitools import (
-        ec2connect,
-        tag_image,
-        )
+    from amitools.util import tag_image
+    from amitools import ec2connect
     if args.create_date is None:
         when = datetime.datetime.utcfromtimestamp(args.create_timestamp)
     else:
