@@ -141,7 +141,7 @@ Use it like:
     ami-waiton [--dumb] [ --nowait-exist ] AMI_ID [STATE]
 
 where STATE is one of "available", "pending", "failed" or "exists".
-The default value is "availble", because very often, when using this
+The default value is "available", because very often, when using this
 command, you will just want to block until the AMI is in the available
 state.
 
