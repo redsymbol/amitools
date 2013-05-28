@@ -48,7 +48,11 @@ class InstanceTestCase(unittest.TestCase):
     and AMITOOLS_DEV_KEYPAIR respectively; if not set, the value "dev"
     will be used for each.
 
-    TODO: can we make that optional? For many tests, setting a security group or keypair isn't necessary.
+    IMPORTANT: AMITOOLS_DEV_AMI must *not* have any of the amitools
+    tags set on it. If it does, certain tests on the anscestry chain
+    may break.
+
+    TODO: can we make the keyapir and sg optional? For many tests, setting these isn't necessary.
 
     '''
 
@@ -120,7 +124,7 @@ class InstanceTestCase(unittest.TestCase):
     @classmethod
     def _tearDownClass(cls):
         if cls.instance:
-            cls.logc('\nTerminating instance %s' % cls.instance.id)
+            cls.logc('Terminating instance %s' % cls.instance.id)
             terminated = cls.conn.terminate_instances(instance_ids=[cls.instance.id])
             assert len(terminated) == 1, terminated
             cls.instance = None

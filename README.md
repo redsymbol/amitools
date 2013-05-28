@@ -182,9 +182,9 @@ Usage:
 
 If invoked with a START_AMI_ID value of ami-55555555, This may show something like:
 IMAGE_ID      CREATE_DATE                   CREATE_TS  SOURCE_INSTANCE
-ami-33333333  Thu Apr 15 18:17:56 UTC 2013  1366049905 i-33333333
-ami-44444444  Thu Apr 16 18:17:56 UTC 2013  1366136305 i-44444444
 ami-55555555  Thu Apr 17 18:17:56 UTC 2013  1366222705 i-55555555
+ami-44444444  Thu Apr 16 18:17:56 UTC 2013  1366136305 i-44444444
+ami-33333333  Thu Apr 15 18:17:56 UTC 2013  1366049905 i-33333333
 
 What this indicates is that ami-55555555 was created from an instance
 run from ami-44444444. The image-creation operation was invoked on

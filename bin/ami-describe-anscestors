@@ -3,35 +3,19 @@
 from amitools import clsetup
 clsetup()
 
-def get_args():
-    import argparse
-    from amitools import common_argparser
-    parser = argparse.ArgumentParser(
-        description='Determine what images an image is derived from',
-        epilog='',
-        parents = [common_argparser],
-        )
-    parser.add_argument('image_id',
-                        help='ID of AMI to find anscestry of')
-    args = parser.parse_args()
-    if not args.image_id.startswith('ami-'):
-        parser.error('image_id must start with "ami-"')
-    return args
-
 if '__main__' == __name__:
-    args = get_args()
-    from amitools import (
-        ec2connect,
-        build_chain,
+    import sys
+    from amitools.tools.ami_describe_anscestors import (
+        get_args,
+        main,
+        CHAIN_SUCCESS,
+        CHAIN_NO_AMI,
         )
-    conn = ec2connect(args.region)
-    all_images = conn.get_all_images(filters={'tag-key':'source_image'})
-    try:
-        chain = build_chain(args.image_id, all_images)
-    except AssertionError:
-        import sys
+    args = get_args()
+    result = main(args)
+    if result['exit_code'] == CHAIN_SUCCESS:
+        for image_id in result['chain']:
+            print(image_id)
+    elif result['exit_code'] == CHAIN_NO_AMI:
         sys.stderr.write('Cannot locate image {} - aborting\n'.format(args.image_id))
-        sys.exit(1)
-    for image_id in chain:
-        print(image_id)
-        
+    sys.exit(result['exit_code'])
