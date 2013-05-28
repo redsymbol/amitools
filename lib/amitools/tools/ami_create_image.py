@@ -35,7 +35,10 @@ def main(args):
         random_name,
         )
     from amitools import ec2connect
-    from amitools.util import tag_image
+    from amitools.util import (
+        calc_tags,
+        tag_image,
+        )
     
     if args.name is None:
         args.name = random_name(args.random_name_prefix)
@@ -53,12 +56,15 @@ def main(args):
     # AMI image creation started. While that's cooking, set up tags
     image = image_watcher.resource
     source_instance = get_instance(conn, args.instance_id)
-    tag_image(
-        conn,
-        image.id,
+    tags = calc_tags(
         source_instance.image_id,
         args.instance_id,
         datetime.datetime.utcnow(),
+        )        
+    tag_image(
+        conn,
+        image.id,
+        tags,
         )
     return {
         'image_id' : image_id,

@@ -29,9 +29,11 @@ class TestDescribeAnscestors(InstanceTestCase):
             self.instance.id,
             now - datetime.timedelta(seconds=5),
             )
+        child_watcher = EC2ImageWatcher(child_image_id, self.conn)
+        child_watcher.waiton_exists()
         tag_image(self.conn, child_image_id, child_tags)
         self.log('Waiting for child AMI {} to be available'.format(child_image_id))
-        EC2ImageWatcher(child_image_id, self.conn).waiton('available')
+        child_watcher.waiton('available')
         # grandchild AMI
         grandchild_image_id = self.conn.create_image(self.instance.id, random_name(), no_reboot=True)
         self.log('Grandchild AMI ID will be {} - setting up tags'.format(grandchild_image_id))
@@ -40,9 +42,11 @@ class TestDescribeAnscestors(InstanceTestCase):
             'i-12345678',
             now,
             )
+        grandchild_watcher = EC2ImageWatcher(grandchild_image_id, self.conn)
+        grandchild_watcher.waiton_exists()
         tag_image(self.conn, grandchild_image_id, grandchild_tags)
         self.log('Waiting for grandchild AMI {} to be available'.format(grandchild_image_id))
-        EC2ImageWatcher(grandchild_image_id, self.conn).waiton('available')
+        grandchild_watcher.waiton('available')
         child_image = self.get_image(child_image_id)
         grandchild_image = self.get_image(grandchild_image_id)
         # now ready to run tests

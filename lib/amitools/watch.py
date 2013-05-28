@@ -12,7 +12,9 @@ class ResourceWatcher(object):
     TIMEOUT = 5 * 60
     # Optionally define to have subclass automatically assert resource ID has a certain prefix
     RESOURCE_PREFIX = None
-    
+    # If defined, as a set of strings, waiton will verify target state is one of these values
+    STATES = None
+
     def __init__(self, resource_id, conn):
         if self.RESOURCE_PREFIX:
             assert resource_id.startswith(self.RESOURCE_PREFIX), resource_id
@@ -31,6 +33,9 @@ class ResourceWatcher(object):
         return state
             
     def waiton(self, target_state):
+        assert target_state != 'exists', 'Use waiton_exists() instead to wait until the image exists'
+        if self.STATES:
+            assert target_state in self.STATES, target_state
         state = self.waiton_exists()
         deadline = time.time() + self.TIMEOUT
         while state != target_state:
@@ -71,6 +76,12 @@ class EC2InstanceWatcher(ResourceWatcher):
 
 class EC2ImageWatcher(ResourceWatcher):
     RESOURCE_PREFIX = 'ami-'
+    STATES = {
+        'available',
+        'pending',
+        'failed',
+        }
+    
     def update_resource(self):
         from boto.exception import EC2ResponseError
         self.resource = None
