@@ -31,6 +31,10 @@ Get the sources, either via git clone or downloading a snapshot, here
 on github. Set your environment so the full path of the folder
 amitools/bin is in your PATH, and amitools/lib is in your PYTHONPATH.
 
+You must also install boto; "pip install boto" will do the job for
+you.  Any recent version should be fine; see requirements.txt for the
+version that the developer is using (and testing on).
+
 ## Credentials & Region Setup
 
 To use these tools, you must first specify your AWS credentials and
