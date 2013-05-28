@@ -22,6 +22,15 @@ And coming soon (see README.future.md for details):
  - ami-describe-children - Show what images are derived from this one
  - ami-clone - Clone an image so you always have your own version
 
+## Installation
+
+Stand by for easy installation via "pip install amitools". In the
+meantime:
+
+Get the sources, either via git clone or downloading a snapshot, here
+on github. Set your environment so the full path of the folder
+amitools/bin is in your PATH, and amitools/lib is in your PYTHONPATH.
+
 ## Credentials & Region Setup
 
 To use these tools, you must first specify your AWS credentials and
