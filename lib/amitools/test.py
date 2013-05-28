@@ -14,6 +14,7 @@ def log(msg):
         msg += '\n'
     sys.__stdout__.write(msg)
     sys.__stdout__.flush()
+    
 
 class InstanceTestCase(unittest.TestCase):
     '''
@@ -57,6 +58,20 @@ class InstanceTestCase(unittest.TestCase):
     old_boto_loglevel = None
 
     @classmethod
+    def logc(cls, msg):
+        '''
+        class-fixture level log message
+        '''
+        msg = cls.__name__ + ': ' + msg
+        return log(msg)
+
+    def log(self, msg):
+        '''
+        log message
+        '''
+        return log(msg)
+
+    @classmethod
     def setupClass(cls):
         try:
             cls._setupClass()
@@ -70,7 +85,7 @@ class InstanceTestCase(unittest.TestCase):
         # produce hundreds of lines of output if a test fails
         cls.old_boto_loglevel = logging.getLogger('boto').level
         new_boto_loglevel = logging.CRITICAL
-        log('Changing boto log level from "%s" to "%s" during tests' % (cls.old_boto_loglevel, new_boto_loglevel))
+        cls.logc('Changing boto log level from "%s" to "%s" during tests' % (cls.old_boto_loglevel, new_boto_loglevel))
         logging.getLogger('boto').setLevel(new_boto_loglevel)
         
         from amitools.watch import EC2InstanceWatcher
@@ -81,13 +96,13 @@ class InstanceTestCase(unittest.TestCase):
             'key_name'        : DEV_KEYPAIR,
             'instance_type'   : DEV_INSTANCE_TYPE,
             }
-        log('Running instance with params: ' + str(params))
+        cls.logc('Running instance with params: ' + str(params))
         reservation = cls.conn.run_instances(**params)
         assert len(reservation.instances) == 1, reservation.instances
         cls.instance = reservation.instances[0]
-        log('Launched instance %s - blocking until it is running' % cls.instance.id)
+        cls.logc('Launched instance %s - blocking until it is running' % cls.instance.id)
         EC2InstanceWatcher(cls.instance.id, cls.conn).waiton('running')
-        log('Dev instance %s in "running" state, ready for tests' % cls.instance.id)
+        cls.logc('Dev instance %s in "running" state, ready for tests' % cls.instance.id)
     
     @classmethod
     def tearDownClass(cls):
@@ -105,7 +120,7 @@ class InstanceTestCase(unittest.TestCase):
     @classmethod
     def _tearDownClass(cls):
         if cls.instance:
-            log('\nTerminating instance %s' % cls.instance.id)
+            cls.logc('\nTerminating instance %s' % cls.instance.id)
             terminated = cls.conn.terminate_instances(instance_ids=[cls.instance.id])
             assert len(terminated) == 1, terminated
             cls.instance = None

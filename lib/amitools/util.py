@@ -38,9 +38,8 @@ def random_name(prefix=None):
         randint(maxsize >> 3, maxsize),
         )
 
-def tag_image(conn, image_id, source_image_id, source_instance_id, when):
+def calc_tags(source_image_id, source_instance_id, when):
     '''
-    conn               : boto.ec2.connection.EC2Connection
     image_id           : AMI ID
     source_image_id    : str
     source_instance_id : str
@@ -56,4 +55,10 @@ def tag_image(conn, image_id, source_image_id, source_instance_id, when):
         'create_date'      : datefmt(when),
         'create_timestamp' : totimestamp(when),
         }
+    return tags
+
+def tag_image(conn, image_id, tags):
+    '''
+    conn               : boto.ec2.connection.EC2Connection
+    '''
     conn.create_tags([image_id], tags)
