@@ -54,8 +54,18 @@ class InstanceTestCase(unittest.TestCase):
     # the EC2 instance - object of type boto.ec2.instance.Instance
     instance = None
 
+    old_boto_loglevel = None
+
     @classmethod
     def setupClass(cls):
+        try:
+            cls._setupClass()
+        except:
+            cls.tearDownClass()
+            raise
+
+    @classmethod
+    def _setupClass(cls):
         # silence boto's verbose debug logging, which can otherwise
         # produce hundreds of lines of output if a test fails
         cls.old_boto_loglevel = logging.getLogger('boto').level
@@ -99,6 +109,7 @@ class InstanceTestCase(unittest.TestCase):
             terminated = cls.conn.terminate_instances(instance_ids=[cls.instance.id])
             assert len(terminated) == 1, terminated
             cls.instance = None
-            logging.getLogger('boto').setLevel(cls.old_boto_loglevel)
+            if cls.old_boto_loglevel:
+                logging.getLogger('boto').setLevel(cls.old_boto_loglevel)
         
 
