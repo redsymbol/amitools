@@ -7,7 +7,8 @@ At the moment (May 2013), it is in a beta. I'd appreciate feedback
 especially on the command line UI, and also reports of bugs or missing
 functionality not called out in the text below. (I'm updating this
 README as I go along.) Message me via github, or (preferred) send
-email to amax at redsymbol dot net.
+email to amax at redsymbol dot net. You can also follow me as
+@redsymbol on twitter.
 
 # What's In The Box
 
