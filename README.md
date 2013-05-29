@@ -127,8 +127,8 @@ This will give the new image a name like
 classification of AMIs based on their name.
 
 (In the highly unlikely event the first generated name is taken,
-ami-create-image will generating a new name until it finds a unique
-one.)
+ami-create-image will keep generating a new name until it finds a
+unique one.)
 
 ## ami-waiton
 
