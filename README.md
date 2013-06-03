@@ -3,7 +3,7 @@ A collection of tools for joyfully working with AWS Machine Images
 AMITools is a collection of command-line tools for creating, querying,
 and working with Amazon machine images.
 
-At the moment (May 2013), it is in a beta. I'd appreciate feedback
+At the moment (June 2013), it is in a beta. I'd appreciate feedback
 especially on the command line UI, and also reports of bugs or missing
 functionality not called out in the text below. (I'm updating this
 README as I go along.) Message me via github, or (preferred) send
