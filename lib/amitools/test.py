@@ -4,8 +4,6 @@ import logging
 from amitools import ec2connect
 
 DEV_AMI = os.environ['AMITOOLS_DEV_AMI']
-DEV_SG = os.environ.get('AMITOOLS_DEV_SG', 'dev')
-DEV_KEYPAIR = os.environ.get('AMITOOLS_DEV_KEYPAIR', 'dev')
 DEV_INSTANCE_TYPE='t1.micro'
 
 def log(msg):
@@ -43,16 +41,13 @@ class InstanceTestCase(unittest.TestCase):
     INSTANCE PARAMETERS
 
     To run tests you will need to define an AMI ID to run, exporting
-    it as AMITOOLS_DEV_AMI in the environment.  You will also need to
-    define a security group and keypair, exported as AMITOOLS_DEV_SG
-    and AMITOOLS_DEV_KEYPAIR respectively; if not set, the value "dev"
-    will be used for each.
+    it as AMITOOLS_DEV_AMI in the environment.  IMPORTANT:
+    AMITOOLS_DEV_AMI must *not* have any of the amitools tags set on
+    it. If it does, certain tests on the ancestry chain may break.
 
-    IMPORTANT: AMITOOLS_DEV_AMI must *not* have any of the amitools
-    tags set on it. If it does, certain tests on the ancestry chain
-    may break.
-
-    TODO: can we make the keyapir and sg optional? For many tests, setting these isn't necessary.
+    Currently the instance is run with no keypair, in the default EC2
+    security group.  There may be a way to specify these in the future
+    if the test needs it.
 
     '''
 
@@ -96,9 +91,6 @@ class InstanceTestCase(unittest.TestCase):
         cls.conn = ec2connect()
         params = {
             'image_id'        : DEV_AMI,
-            'security_groups' : [DEV_SG],
-            'key_name'        : DEV_KEYPAIR,
-            'instance_type'   : DEV_INSTANCE_TYPE,
             }
         cls.logc('Running instance with params: ' + str(params))
         reservation = cls.conn.run_instances(**params)
