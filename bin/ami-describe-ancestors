@@ -5,7 +5,7 @@ clsetup()
 
 if '__main__' == __name__:
     import sys
-    from amitools.tools.ami_describe_anscestors import (
+    from amitools.tools.ami_describe_ancestors import (
         get_args,
         main,
         CHAIN_SUCCESS,

@@ -56,8 +56,8 @@ direct contact info is in the "Author" section of the main README.
 
 The executables in bin/ are thin wrappers around a dedicated module in
 amitools.tools; for example, most of the code for
-ami-describe-anscestors is in
-lib/amitools/tools/ami_describe_anscestors.py (and the modules it
+ami-describe-ancestors is in
+lib/amitools/tools/ami_describe_ancestors.py (and the modules it
 imports). These executables import a "get_args" and a "main" callable
 from its corresponding amitools.tools module, and possibly some other
 symbols. If you want to look at what one of the executables is doing,

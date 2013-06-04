@@ -49,7 +49,7 @@ class InstanceTestCase(unittest.TestCase):
     will be used for each.
 
     IMPORTANT: AMITOOLS_DEV_AMI must *not* have any of the amitools
-    tags set on it. If it does, certain tests on the anscestry chain
+    tags set on it. If it does, certain tests on the ancestry chain
     may break.
 
     TODO: can we make the keyapir and sg optional? For many tests, setting these isn't necessary.

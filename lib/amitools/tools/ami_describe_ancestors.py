@@ -13,7 +13,7 @@ def get_args(argv=None):
         parents = [common_argparser],
         )
     parser.add_argument('image_id',
-                        help='ID of AMI to find anscestry of')
+                        help='ID of AMI to find ancestry of')
     args = parser.parse_args(argv)
     if not args.image_id.startswith('ami-'):
         parser.error('image_id must start with "ami-"')

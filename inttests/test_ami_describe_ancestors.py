@@ -1,12 +1,12 @@
 from amitools.test import InstanceTestCase
 
-class TestDescribeAnscestors(InstanceTestCase):
+class TestDescribeAncestors(InstanceTestCase):
     def get_image(self, image_id):
         return self.conn.get_all_images([image_id])[0]
     
     def test_simple(self):
         import datetime
-        from amitools.tools.ami_describe_anscestors import (
+        from amitools.tools.ami_describe_ancestors import (
             get_args,
             main,
             CHAIN_SUCCESS,

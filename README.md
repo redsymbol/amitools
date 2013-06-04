@@ -14,7 +14,7 @@ email to amax at redsymbol dot net. You can also follow me as
 
  - ami-create-image - Like ec2-create-image, but way better
  - ami-waiton - Wait for the image to reach a useful state * 
- - ami-describe-anscestors - What images are this image derived from? *
+ - ami-describe-ancestors - What images are this image derived from? *
  - ami-tag-image - Tag an existing image like ami-create-image does
 
 (Items marked with "*" are mostly but not yet completely implemented.)
@@ -175,10 +175,10 @@ error if the AMI isn't immediately visible.  (This option is only
 supported with states other than "exist", because that's what makes
 sense.)
 
-## ami-describe-anscestors
+## ami-describe-ancestors
 (partially implemented; only shows image IDs, not other columns yet)
 
-ami-describe-anscestors answers questions like:
+ami-describe-ancestors answers questions like:
 
  - What image was this image derived from?
  - What was the "grandparent" image? And the one before that?
@@ -187,12 +187,12 @@ ami-describe-anscestors answers questions like:
 There is a prerequisite: it only works with images that were created
 via ami-create-images, or those AMIs that are externally tagged in the
 same way ami-create-images does. If you build a toolchain that creates
-your AMIs via ami-create-images, ami-describe-anscestors can tell you
+your AMIs via ami-create-images, ami-describe-ancestors can tell you
 where any image ID sits in the hierarchy.
 
 Usage:
 
-    ami-describe-anscestors [-C|--columns] START_AMI_ID
+    ami-describe-ancestors [-C|--columns] START_AMI_ID
 
 If invoked with a START_AMI_ID value of ami-55555555, This may show something like:
 

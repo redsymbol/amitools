@@ -9,7 +9,7 @@ ami-describe-children answers questions like:
  - What are the known "grandchildren" images, and so on?
  - When did all the above happen?
 
-Like ami-describe-anscestors, it works only with images that were
+Like ami-describe-ancestors, it works only with images that were
 created via ami-create-images, or those AMIs that are externally
 tagged in the same way ami-create-images does - for the same reasons.
 
