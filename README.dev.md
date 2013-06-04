@@ -49,8 +49,8 @@ This is obviously a hazard to your monthly AWS bill. Please exercise
 some care and check that no stray EC2 instances are running after you
 are done with your testing.
 
-(If you do find a reproducible leak, please let me know - my direct
-contact info is in the "Author" section below.)
+If you do find a reproducible leak, by all means let me know - my
+direct contact info is in the "Author" section of the main README.
 
 ## Code Structure
 
