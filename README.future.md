@@ -1,5 +1,3 @@
- - ami-clone - Clone an image so you always have your own version
-
 ## ami-describe-children
 (not implemented yet)
 
@@ -56,3 +54,35 @@ In addition, ami-clone will give the new image the same tags as the
 other images created by amitools, so you always know where (and when)
 it fits in your AMI hierarchy.
 
+## ami-copy-image
+(not implemented yet)
+
+ami-copy-image copies an AMI from one region to another. It is exactly
+like
+[ec2-create-image](http://docs.aws.amazon.com/AWSEC2/latest/CommandLineReference/ApiReference-cmd-CreateImage.html),
+but also sets the standard AMITools tags. It also sets one other:
+source_region, whose value will be a region code like "us-east-1" or "ap-southeast-1".
+
+Usage:
+
+    ami-copy-image -r SOURCE_REGION -s SOURCE_AMI_ID [OPTS ...]
+
+The options include:
+    -R, --dest-region    DEST_REGION
+    -n, --name           AMI_NAME
+    --random-name-prefix PREFIX
+    -d, --description    DESCRIPTION
+
+The destination region defaults to the current region, as defined by
+AWS_DEFAULT_REGION or the "region" setting in the credentials file.
+
+You'll notice that, unlike ec2-create-image, the -n/--name option is
+optional. By default, a random AMI name is generated for you, the same
+as in ami-create-image. You can also specify a prefix for the random
+name via --random-name-prefix. See the section on ami-create-image for details.
+
+# TODOs
+
+Make ami-describe-ancestors and ami-describe-children aware of
+cross-region copies. Do we want this to be controlled by an option? If
+so, what's the default?
