@@ -59,7 +59,7 @@ it fits in your AMI hierarchy.
 
 ami-copy-image copies an AMI from one region to another. It is exactly
 like
-[ec2-create-image](http://docs.aws.amazon.com/AWSEC2/latest/CommandLineReference/ApiReference-cmd-CreateImage.html),
+[ec2-copy-image](http://docs.aws.amazon.com/AWSEC2/latest/CommandLineReference/ApiReference-cmd-CopyImage.html),
 but also sets the standard AMITools tags. It also sets one other:
 source_region, whose value will be a region code like "us-east-1" or "ap-southeast-1".
 
