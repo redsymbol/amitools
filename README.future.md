@@ -86,3 +86,8 @@ name via --random-name-prefix. See the section on ami-create-image for details.
 Make ami-describe-ancestors and ami-describe-children aware of
 cross-region copies. Do we want this to be controlled by an option? If
 so, what's the default?
+
+I think I need to set the source_region tag in the default tag set,
+i.e. all AMIs created via amitools will have that, even if they are
+only ever used in the same region. Would make all the cross-region
+stuff a lot simpler.
