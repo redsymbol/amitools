@@ -1,9 +1,11 @@
 A collection of tools for managing and creating AWS Machine Images
 
-AMITools is a collection of command-line tools for creating, querying,
-and working with Amazon machine images. Together, these excel at
-automating and taming flows that require frequently creating and
-re-creating AMIs: making its logistic complexity far more simple.
+If your AWS workflow involves creating many AMIs (machine images), on
+a weekly, daily, or even hourly basis, managing them becomes a
+logistical nightmare. Born from hard experience, AMITools solves many
+of the toughest problems in this situation: letting you quickly answer
+questions about the relationships between your AMIs, their history,
+and current status... making its logistic complexity far more simple.
 
 At the moment (June 2013), it is in a beta. I'd appreciate feedback
 especially on the command line UI, and also reports of bugs or missing
@@ -24,6 +26,7 @@ email to amax at redsymbol dot net. You can also follow me as
 And coming soon (see README.future.md for details):
  - ami-describe-children - Show what images are derived from this one
  - ami-clone - Clone an image so you always have your own version
+ - ami-copy-image - Copy an AMI from one region to another
 
 ## Installation
 
