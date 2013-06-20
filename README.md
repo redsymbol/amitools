@@ -225,6 +225,45 @@ instance i-44444444, on April 16th 2013.  This output also reveals
 that ami-44444444 was created from an instance run from i-33333333,
 and so on.
 
+# ami-tag-image
+
+ami-tag-image lets you set the standard AMITools tags on any image, in
+a way that's more convenient and robust than setting them
+manually. This has several uses.
+
+When you create a new image via ami-create-image, these tags are set
+automatically.  And if that is the only way you ever create images,
+you won't have to use ami-tag-image.  But suppose you have some
+important AMIs that were created before then; or, you need to continue
+generating new images using a different technique (there are many
+valid reasons for this).
+
+ami-tag-image applies in all these situations. It has flags used to
+set the correct values for each of the required tags, with some handy
+error-checking.
+
+The options:
+
+    --source-image SOURCE_IMAGE
+                        Image ID of source AMI
+			(tag: source_image)
+    --source-instance SOURCE_INSTANCE
+                        ID of source instance
+			(tag: source_instance)
+    --source-region SOURCE_REGION
+                        Region for the source AMI
+			(tag: source_region)
+    --create-date CREATE_DATE
+                        Creation date, in UTC/GMT, like "20110909T233600Z"
+                        (tag: create_date)
+    --create-timestamp CREATE_TIMESTAMP
+                        Creation timestamp, in seconds since the epoch
+			(tag: create_timestamp)
+
+You supply exactly one of --create-timestamp or --create-date, but NOT
+both. The value of the other will be calculated automatically by the
+one you supply.
+
 # Author
 
 Created by [Aaron Maxwell](http://redsymbol.net). To give feedback,
