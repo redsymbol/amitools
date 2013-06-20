@@ -56,9 +56,11 @@ def main(args):
     # AMI image creation started. While that's cooking, set up tags
     image = image_watcher.resource
     source_instance = get_instance(conn, args.instance_id)
+    source_region = source_instance.region.name
     tags = calc_tags(
         source_instance.image_id,
         args.instance_id,
+        source_region,
         datetime.datetime.utcnow(),
         )        
     tag_image(

@@ -38,7 +38,7 @@ def random_name(prefix=None):
         randint(maxsize >> 3, maxsize),
         )
 
-def calc_tags(source_image_id, source_instance_id, when):
+def calc_tags(source_image_id, source_instance_id, source_region, when):
     '''
     image_id           : AMI ID
     source_image_id    : str
@@ -52,6 +52,7 @@ def calc_tags(source_image_id, source_instance_id, when):
     tags = {
         'source_image'     : source_image_id,
         'source_instance'  : source_instance_id,
+        'source_region'    : source_region,
         'create_date'      : datefmt(when),
         'create_timestamp' : totimestamp(when),
         }

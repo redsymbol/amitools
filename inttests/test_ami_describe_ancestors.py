@@ -27,6 +27,7 @@ class TestDescribeAncestors(InstanceTestCase):
         child_tags = calc_tags(
             self.instance.image_id,
             self.instance.id,
+            'us-east-1',
             now - datetime.timedelta(seconds=5),
             )
         child_watcher = EC2ImageWatcher(child_image_id, self.conn)
@@ -40,6 +41,7 @@ class TestDescribeAncestors(InstanceTestCase):
         grandchild_tags = calc_tags(
             child_image_id,
             'i-12345678',
+            'us-east-1',
             now,
             )
         grandchild_watcher = EC2ImageWatcher(grandchild_image_id, self.conn)

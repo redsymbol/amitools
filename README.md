@@ -91,6 +91,7 @@ geneology. These include:
 
  - source_image       The AMI ID of the instance from which it was created
  - source_instance    The instance ID from which it was created
+ - source_region      Region of the source AMI
  - create_date        When it was created (human-readable)
  - create_timestamp   When it was created (seconds since epoch)
 

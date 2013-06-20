@@ -22,6 +22,8 @@ class TestTagImage(InstanceTestCase):
                 'ami-12341234',
                 '--source-instance',
                 'i-12341234',
+                '--source-region',
+                'us-east-1',
                 '--create-timestamp',
                 '1369723137',
                 image_id,
@@ -33,4 +35,5 @@ class TestTagImage(InstanceTestCase):
         self.assertEqual('ami-12341234', new_image.tags['source_image'])
         self.assertEqual('i-12341234', new_image.tags['source_instance'])
         self.assertEqual('1369723137', new_image.tags['create_timestamp'])
+        self.assertEqual('us-east-1', new_image.tags['source_region'])
             

@@ -20,6 +20,8 @@ both*. Whichever you supply will be used to calculate the other.
                         help='Image ID of source AMI (tag: source_image)')
     parser.add_argument('--source-instance', required=True,
                         help='ID of source instance (tag: source_instance)')
+    parser.add_argument('--source-region', required=True,
+                        help='Region for the source AMI (tag: source_region)')
     parser.add_argument('--create-date', default=None,
                         help='Creation date, in UTC/GMT, like "20110909T233600Z" (tag: create_date)')
     parser.add_argument('--create-timestamp', default=None, type=int,
@@ -61,6 +63,7 @@ def main(args):
     tags = calc_tags(
         args.source_image,
         args.source_instance,
+        args.source_region,
         when,
         )        
     tag_image(
