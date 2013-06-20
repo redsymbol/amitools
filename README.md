@@ -76,11 +76,19 @@ the image's heritage and geneology.  These are set automatically by
 ami-create-image, or you can set or change them manually with
 ami-tag-image. The tags include:
 
- - source_image       The AMI ID of the instance from which it was created
- - source_instance    The instance ID from which it was created
- - source_region      Region of the source AMI
- - create_date        When it was created (human-readable)
- - create_timestamp   When it was created (seconds since epoch)
+<dl>
+  <dt>source_image</dt>
+  <dd>The AMI ID of the instance from which it was created</dd>
+  <dt>source_instance</dt>
+  <dd>The instance ID from which it was created</dd>
+  <dt>source_region</dt>
+  <dd>Region of the source AMI</dd>
+  <dt>create_date</dt>
+  <dd>When it was created (human-readable)</dd>
+  <dt>create_timestamp</dt>
+  <dd>When it was created (seconds since epoch)</dd>
+</dl>
+
 
 (create_date and create_timestamp encode the same information, just
 represented in two differently convenient formats.)
