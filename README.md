@@ -69,6 +69,26 @@ Create a file whose content looks like this:
 Make sure it is not world-readable. Then, export the full path to this
 file in the environment variable AWS_CREDENTIAL_FILE. 
 
+# Image Tags
+
+The AMITools work with a standard set of tags on each AMI, defining
+the image's heritage and geneology.  These are set automatically by
+ami-create-image, or you can set or change them manually with
+ami-tag-image. The tags include:
+
+ - source_image       The AMI ID of the instance from which it was created
+ - source_instance    The instance ID from which it was created
+ - source_region      Region of the source AMI
+ - create_date        When it was created (human-readable)
+ - create_timestamp   When it was created (seconds since epoch)
+
+(create_date and create_timestamp encode the same information, just
+represented in two differently convenient formats.)
+
+This information is helpful and useful all by itself. It's
+used to even greater effect by other tools in this package - both
+current, and planned for the near future.
+
 # Command Descriptions
 
 Unless noted otherwise, each command takes a -r/--region option. If
@@ -84,23 +104,7 @@ line tools, with some differences:
  - Automatically tag images with delicious and valuable info
  - Optionly generate unique, random new AMI name for you
 
-### Image Tags
-
-ami-create-image tags the AMI with information about its heritage and
-geneology. These include:
-
- - source_image       The AMI ID of the instance from which it was created
- - source_instance    The instance ID from which it was created
- - source_region      Region of the source AMI
- - create_date        When it was created (human-readable)
- - create_timestamp   When it was created (seconds since epoch)
-
-(create_date and create_timestamp encode the same information, just
-represented in two differently convenient formats.)
-
-This information is helpful and useful all by itself. However, it's
-used to even greater effect by other tools in this package - both
-current, and planned for the near future.
+The tags are described above, in "Image Tags".
 
 ### Auto-Naming
 
