@@ -246,19 +246,19 @@ The options:
 
     --source-image SOURCE_IMAGE
                         Image ID of source AMI
-			(tag: source_image)
+                        (tag: source_image)
     --source-instance SOURCE_INSTANCE
                         ID of source instance
-			(tag: source_instance)
+                        (tag: source_instance)
     --source-region SOURCE_REGION
                         Region for the source AMI
-			(tag: source_region)
+                        (tag: source_region)
     --create-date CREATE_DATE
                         Creation date, in UTC/GMT, like "20110909T233600Z"
                         (tag: create_date)
     --create-timestamp CREATE_TIMESTAMP
                         Creation timestamp, in seconds since the epoch
-			(tag: create_timestamp)
+                        (tag: create_timestamp)
 
 You supply exactly one of --create-timestamp or --create-date, but NOT
 both. The value of the other will be calculated automatically by the
