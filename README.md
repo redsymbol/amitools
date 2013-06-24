@@ -150,7 +150,7 @@ unique one.)
 
 ## ami-waiton
 
-(partially implemented; some of the promised intelligence, and the --dumb option, are not yet done)
+(mostly implemented; the --dumb option is not yet done)
 
 ami-waiton robustly waits for an AMI to be in a particular
 state, intelligently handling latency and race conditions.
@@ -166,10 +166,8 @@ state.
 
 By default, some intelligence is applied. If you specify "available",
 and the AMI is in state "failed", it will never be available;
-ami-waiton exits with a error code.  If you specify "pending", and
-the current state is "available", it returns immediately with a
-success code; the rationale is that "ami-waiton AMI_ID pending" really
-means, "wait until it is in the pending state, or better."
+ami-waiton exits with a error code.  Similar if you specify "pending"
+as the target state.
 
 If you'd like this magic disabled, use the --dumb option. This will
 strictly interpret the state argument.
