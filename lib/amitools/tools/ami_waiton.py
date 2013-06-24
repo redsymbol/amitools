@@ -54,7 +54,7 @@ def main(args):
     if 'exists' != args.state:
         if not can_reach(current_state, args.state):
             return {
-                'msg' : 'FATAL\tCurrent state of "{}" can never transistion to target of "{}"'.format(current_state, args.state),
+                'msg' : 'FATAL\tCurrent state of "{}" can never transition to target of "{}"'.format(current_state, args.state),
                 'exit_code' : 3,
                 }
         if current_state != args.state:
