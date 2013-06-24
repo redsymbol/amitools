@@ -4,10 +4,13 @@ from amitools import clsetup
 clsetup()
 
 if '__main__' == __name__:
+    import sys
     from amitools.tools.ami_waiton import (
         get_args,
         main,
         )
     args = get_args()
-    main(args)
-    
+    result = main(args)
+    if result:
+        print(result['msg'])
+        sys.exit(result['exit_code'])

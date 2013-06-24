@@ -29,7 +29,6 @@ def can_reach(prior_state, target_state):
     return 'pending' == prior_state
 
 def main(args):
-    import sys
     from amitools import (
         EC2ImageWatcher,
         ec2connect,
@@ -40,25 +39,30 @@ def main(args):
     current_state = image_watcher.state()
     if current_state is None:
         if args.nowait_exists:
-            print('ERROR\tNo image ID {}'.format(args.image_id))
-            sys.exit(1)
+            return {
+                'msg' : 'ERROR\tNo image ID {}'.format(args.image_id),
+                'exit_code' : 1,
+                }
         try:
             current_state = image_watcher.waiton_exists()
         except TimeoutException as ex:
-            print('FATAL\tTimed out waiting for image ID {} to exist'.format(args.image_id))
-            sys.exit(2)
+            return {
+                'msg' : 'FATAL\tTimed out waiting for image ID {} to exist'.format(args.image_id),
+                'exit_code' : 2,
+                }
     assert current_state is not None
     if 'exists' != args.state:
         if not can_reach(current_state, args.state):
-            print('FATAL\tCurrent state of "{}" can never transistion to target of "{}"'.format(current_state, args.state))
-            sys.exit(3)
+            return {
+                'msg' : 'FATAL\tCurrent state of "{}" can never transistion to target of "{}"'.format(current_state, args.state),
+                'exit_code' : 3,
+                }
         if current_state != args.state:
             try:
                 image_watcher.waiton(args.state)
             except TimeoutException as ex:
-                print('FATAL\tTimed out waiting for image ID {} to reach state {} - lastest was {}'.format(
-                        args.image_id, args.state, current_state))
-                sys.exit(1)
-
-
-
+                return {
+                    'msg' : 'FATAL\tTimed out waiting for image ID {} to reach state {} - lastest was {}'.format(
+                        args.image_id, args.state, current_state),
+                    'exit_code' : 1,
+                    }
