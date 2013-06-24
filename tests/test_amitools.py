@@ -40,3 +40,18 @@ class TestChain(unittest.TestCase):
             ]
         actual = build_chain('ami-44444444', all_images)
         self.assertSequenceEqual(expected, actual)
+
+class TestAmiWaiton(unittest.TestCase):
+    def test_can_reach(self):
+        from amitools.tools.ami_waiton import can_reach
+        self.assertTrue(can_reach('available', 'available'))
+        self.assertFalse(can_reach('failed', 'available'))
+        self.assertTrue(can_reach('pending', 'available'))
+
+        self.assertFalse(can_reach('available', 'failed'))
+        self.assertTrue(can_reach('failed', 'failed'))
+        self.assertTrue(can_reach('pending', 'failed'))
+
+        self.assertFalse(can_reach('available', 'pending'))
+        self.assertFalse(can_reach('failed', 'pending'))
+        self.assertTrue(can_reach('pending', 'pending'))
