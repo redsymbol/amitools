@@ -166,7 +166,7 @@ state.
 
 By default, some intelligence is applied. If you specify "available",
 and the AMI is in state "failed", it will never be available;
-ami-waiton exits with a error code.  If you specifiy "pending", and
+ami-waiton exits with a error code.  If you specify "pending", and
 the current state is "available", it returns immediately with a
 success code; the rationale is that "ami-waiton AMI_ID pending" really
 means, "wait until it is in the pending state, or better."
